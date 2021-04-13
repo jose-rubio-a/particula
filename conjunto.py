@@ -1,4 +1,5 @@
-from particula import Particula
+from .particula import Particula
+import json
 
 class Conjunto:
     def __init__(self):
@@ -14,10 +15,25 @@ class Conjunto:
         for particula in self.__particulas:
             print(particula)
 
-p01 = Particula(id=101,origen_X=5,origen_Y=8,destino_X=3,destino_Y=6,velocidad=13,red=111,green=186,blue=50)
-p02 = Particula(206,15,6,26,5,22,42,150,206)
-conjunto = Conjunto()
-conjunto.agregar_final(p01)
-conjunto.agregar_inicio(p02)
-conjunto.agregar_inicio(p01)
-conjunto.mostrar()
+    def __str__(self):
+        return "".join(
+            str (particula) + '\n' for particula in self.__particulas
+        )
+    
+    def guardar(self,ubicacion):
+        try:
+            with open(ubicacion,'w') as archivo:
+                lista = [particula.to_dict() for particula in self.__particulas]
+                json.dump(lista, archivo, indent=5)
+            return 1
+        except:
+            return 0
+        
+    def abrir(self,ubicacion):
+        try:
+            with open(ubicacion,'r') as archivo:
+                lista = json.load(archivo)
+                self.__particulas = [Particula(**particula) for particula in lista]
+            return 1
+        except:
+            return 0
